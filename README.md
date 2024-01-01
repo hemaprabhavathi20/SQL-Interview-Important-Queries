@@ -14,15 +14,15 @@ Important/Repeated asked SQL Questions:
 4. Write a query to remove duplicate rows in the table.
 
  5.Write a query to get desired output?
-      <div style="text-align:center;">
-  <img src="https://github.com/hemaprabhavathi20/SQL-Interview-Important-Queries/assets/147178268/e317d5c8-0b21-4708-9752-8e07646c7183" alt="Screenshot (489)" style="width:80%;">
-</div>
+     <p align="center">
+  <img src="https://github.com/hemaprabhavathi20/SQL-Interview-Important-Queries/assets/147178268/e317d5c8-0b21-4708-9752-8e07646c7183" alt="Screenshot (489)" width="80%">
+</p>
 
         
 6.Write a query to get desired output? 
-              <div style="text-align:center;">
+              <p align="center">
             ![PIVOT-SQL](https://github.com/hemaprabhavathi20/SQL-Interview-Important-Queries/assets/147178268/f9452977-6dc4-4720-98f5-275487e061ec)
-                 </div>
+                 </p>
                  
  7.Retrieve the names and salaries of all employees along with their immediate manager's name<BR>
 
