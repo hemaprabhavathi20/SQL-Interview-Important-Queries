@@ -4,7 +4,8 @@ I keep updating this question.
 
 Important/Repeated asked SQL Questions:
 
-1. Write a query to find highest and lowest salary in each department
+1. Write a query to find highest and lowest salary in each department<BR>
+   
 2.From the given cars_travel table, find the actual distance travelled by each car corresponding to each day.
 
 3. Write a sql query to schedule a match between each team
