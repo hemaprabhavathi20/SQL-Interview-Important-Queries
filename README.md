@@ -21,7 +21,5 @@ Important/Repeated asked SQL Questions:
             ![PIVOT-SQL](https://github.com/hemaprabhavathi20/SQL-Interview-Important-Queries/assets/147178268/f9452977-6dc4-4720-98f5-275487e061ec)
                </p>
                  
- 7.Retrieve the names and salaries of all employees along with their immediate manager's name<BR>
-
-
+7.Retrieve the names and salaries of all employees along with their immediate manager's name<BR>
 8. List the hierarchy (ancestors) for a specific employee. For example, list all the managers for employee 'Bob Johnson'
