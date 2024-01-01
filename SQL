@@ -1,7 +1,7 @@
 #1. Write a query to find highest and lowest salary in each department
 create table employee
 (
-	id 			int AUTO_INCREMENT primary key,
+	id 		int AUTO_INCREMENT primary key,
 	name 		varchar(100),
 	dept 		varchar(100),
 	salary 		int
