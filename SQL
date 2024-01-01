@@ -1,0 +1,341 @@
+#1. Write a query to find highest and lowest salary in each department
+create table employee
+(
+	id 			int AUTO_INCREMENT primary key,
+	name 		varchar(100),
+	dept 		varchar(100),
+	salary 		int
+);
+insert into employee values( 'Alexander', 'Admin', 6500);
+insert into employee values( 'Leo', 'Finance', 7000);
+insert into employee values( 'Robin', 'IT', 2000);
+insert into employee values( 'Ali', 'IT', 4000);
+insert into employee values( 'Maria', 'IT', 6000);
+insert into employee values( 'Alice', 'Admin', 5000);
+insert into employee values( 'Sebastian', 'HR', 3000);
+insert into employee values( 'Emma', 'Finance', 4000);
+insert into employee values('John', 'HR', 4500);
+insert into employee values('Kabir', 'IT', 8000);
+
+SELECT * ,
+	   max(salary) over(partition by dept order by salary desc) as highest_salary,
+       min(salary) over(partition by dept order by salary desc
+						 range BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as LOWEST_salary 
+from employee;
+--------------------------------------------------------------------------------------------------------------------------
+#2.From the given cars_travel table, find the actual distance travelled by each car corresponding to each day.
+drop table car_travels;
+create table car_travels
+(
+    cars                    varchar(40),
+    days                    varchar(10),
+    cumulative_distance     int
+);
+insert into car_travels values ('Car1', 'Day1', 50);
+insert into car_travels values ('Car1', 'Day2', 100);
+insert into car_travels values ('Car1', 'Day3', 200);
+insert into car_travels values ('Car2', 'Day1', 0);
+insert into car_travels values ('Car3', 'Day1', 0);
+insert into car_travels values ('Car3', 'Day2', 50);
+insert into car_travels values ('Car3', 'Day3', 50);
+insert into car_travels values ('Car3', 'Day4', 100);
+
+
+SELECT cars,
+       days,
+	   cumulative_distance  - LAG(cumulative_distance,1,0) OVER(PARTITION BY cars ORDER BY days) as actual_distance_travelled
+       FROM car_travels;
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+# 3. 1) Write an sql query such that each team play with every other team just once.
+
+CREATE TABLE IPLTeams (
+    teamid INT PRIMARY KEY,
+    teamname VARCHAR(50) UNIQUE
+);
+
+-- Insert data for each team
+INSERT INTO IPLTeams (teamid, teamname) VALUES (1, 'Chennai Super Kings');
+INSERT INTO IPLTeams (teamid, teamname) VALUES (2, 'Delhi Capitals');
+INSERT INTO IPLTeams (teamid, teamname) VALUES (3, 'Gujarat Titans');
+INSERT INTO IPLTeams (teamid, teamname) VALUES (4, 'Kolkata Knight Riders');
+INSERT INTO IPLTeams (teamid, teamname) VALUES (5, 'Lucknow Super Giants');
+INSERT INTO IPLTeams (teamid, teamname) VALUES (6, 'Mumbai Indians');
+INSERT INTO IPLTeams (teamid, teamname) VALUES (7, 'Punjab Kings');
+INSERT INTO IPLTeams (teamid, teamname) VALUES (8, 'Rajasthan Royals');
+INSERT INTO IPLTeams (teamid, teamname) VALUES (9, 'Royal Challengers Bangalore');
+INSERT INTO IPLTeams (teamid, teamname) VALUES (10, 'Sunrisers Hyderabad');
+
+SELECT ipl1.teamname as team_1,
+	   ipl2.teamname as team_2
+       from iplteams ipl1
+       CROSS JOIN iplteams ipl2   #whenever you use cross join there is no need to write the ON statement.
+       WHERE ipl1.teamname<ipl2.teamname; 
+#So, the condition ipl1.teamname < ipl2.teamname ensures that we only get combinations where the teamname from the first set is alphabetically or numerically less than the teamname from the second set.
+       
+SELECT ipl1.teamname as team_1,
+ipl2.teamname as team_2
+FROM iplteams ipl1
+JOIN iplteams ipl2 ON ipl1.teamname < ipl2.teamname;
+
+#2) Write an sql query such that each team play with every other team twice.
+
+SELECT ipl1.teamname as team_1,ipl2.teamname as team_2
+       from iplteams ipl1
+       CROSS JOIN iplteams ipl2   #whenever you use cross join there is no need to write the ON statement.
+       WHERE ipl1.teamname<>ipl2.teamname
+       ORDER BY ipl1.teamname,ipl2.teamname; 
+-------------------------------------------------------------------------------------------------------------------------------------------       
+# 4. Write a query to remove duplicate rows in the table.
+CREATE TABLE detail (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(255),
+    Age INT,
+    City VARCHAR(255)
+);
+
+INSERT INTO detail (ID, Name, Age, City) VALUES
+    (1, 'John', 25, 'New York'),
+    (2, 'Emily', 30, 'Los Angeles'),
+    (3, 'Michael', 28, 'Chicago'),
+    (4, 'Sarah', 22, 'San Francisco'),
+    (5, 'Olivia', 29, 'San Francisco'),
+    (6, 'Jessica', 27, 'Chicago'),
+    (7, 'Ryan', 32, 'Seattle'),
+    (8, 'Olivia', 29, 'San Francisco'),
+    (9, 'Ethan', 26, 'Denver'),
+    (10, 'Emma', 24, 'New York'),
+    (11, 'John', 25, 'New York'),
+    (12,'Michael', 28, 'Chicago');
+
+#you can use this if you deleted the duplicates and run the below :
+INSERT INTO detail (ID, Name, Age, City) VALUES (8, 'Olivia', 29, 'San Francisco'),
+ (11, 'John', 25, 'New York'),
+(12,'Michael', 28, 'Chicago');
+
+#BELOW IS THE QUERY YOU CAN USE IN DATABASE SYSTEM LIKE ORACLE,MICROSOFT ETC..
+delete from detail
+where id IN (SELECT  max(id) from detail
+			group by Name
+			having count(*)>1);
+
+# THIS IS USED IN MYSQL. WHY DO I MENTION SEPARTE QUERIES FOR THIS BECAUSE FOR THIS AND FOR EXPLANATION YOU CAN CHECKOUT IN MY LINKEDIN POST.
+# CHECK OUT MY LINKEDIN ID HEMA PRABHAVATHI
+with cte AS
+(SELECT MAX(id) AS max_id FROM detail
+GROUP BY Name
+HAVING COUNT(*) > 1)
+
+DELETE FROM detail
+WHERE id IN (SELECT max_id FROM cte);
+# BOTH QUERIES REMOVE DUPLICATES
+with cte AS
+(SELECT Name,Age,City,min(id) AS mIN_id FROM detail
+GROUP BY Name,Age,City
+HAVING COUNT(*) > 1)
+
+DELETE FROM detail
+WHERE id IN (SELECT mIN_id FROM cte);
+#3.
+DELETE FROM detail
+WHERE id IN (
+    SELECT id
+    FROM (
+        SELECT id,
+               ROW_NUMBER() OVER (PARTITION BY name ORDER BY id) AS rn
+        FROM detail
+    ) AS derived
+    WHERE rn > 1
+);
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+#5. Write a query to get desired output?
+create table src_dest_distance
+(
+    source          varchar(20),
+    destination     varchar(20),
+    distance        int
+);
+insert into src_dest_distance values ('Bangalore', 'Hyderbad', 400);
+insert into src_dest_distance values ('Hyderbad', 'Bangalore', 400);
+insert into src_dest_distance values ('Mumbai', 'Delhi', 400);
+insert into src_dest_distance values ('Delhi', 'Mumbai', 400);
+insert into src_dest_distance values ('Chennai', 'Pune', 400);
+insert into src_dest_distance values ('Pune', 'Chennai', 400);
+
+#ANSWER 1:
+SELECT d1.source,
+    d1.destination,
+    d1.distance from src_dest_distance d1 
+JOIN src_dest_distance d2 
+ON d1.source=d2.destination AND 
+d1.destination=d2.source AND 
+d1.source < d1.destination;
+
+#ANSWER 2:
+WITH cte AS (
+    SELECT *,
+           ROW_NUMBER() OVER () AS rn
+    FROM src_dest_distance
+)
+SELECT t1.source, t1.destination,t1.distance
+FROM cte t1
+JOIN cte t2
+ON t1.rn < t2.rn
+AND t1.source = t2.destination
+AND t1.destination = t2.source;
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#6. (1) Example query for pivoting
+CREATE TABLE sales_data (
+    order_id    INT,
+    order_date  DATE,
+    customer_id INT,
+    product_id  INT,
+    product_name VARCHAR(50),
+    category    VARCHAR(30),
+    quantity    INT,
+    amount      DECIMAL(10, 2)
+);
+
+INSERT INTO sales_data VALUES (1, '2023-01-01', 101, 201, 'Laptop', 'Electronics', 3, 2500.00);
+INSERT INTO sales_data VALUES (2, '2023-01-02', 102, 202, 'Smartphone', 'Electronics', 5, 1500.00);
+INSERT INTO sales_data VALUES (3, '2023-01-03', 103, 203, 'Tablet', 'Electronics', 2, 800.00);
+INSERT INTO sales_data VALUES (4, '2023-02-01', 101, 201, 'Laptop', 'Electronics', 2, 1800.00);
+INSERT INTO sales_data VALUES (5, '2023-02-02', 102, 202, 'Smartphone', 'Electronics', 4, 1200.00);
+INSERT INTO sales_data VALUES (6, '2023-02-03', 103, 203, 'Tablet', 'Electronics', 3, 600.00);
+INSERT INTO sales_data VALUES (7, '2023-01-01', 201, 301, 'Men''s Jeans', 'Apparel', 4, 400.00);
+INSERT INTO sales_data VALUES (8, '2023-01-02', 202, 302, 'Women''s Dress', 'Apparel', 2, 300.00);
+INSERT INTO sales_data VALUES (9, '2023-01-03', 203, 303, 'Men''s T-shirt', 'Apparel', 3, 150.00);
+INSERT INTO sales_data VALUES (10, '2023-02-01', 201, 301, 'Men''s Jeans', 'Apparel', 2, 200.00);
+INSERT INTO sales_data VALUES (11, '2023-02-02', 202, 302, 'Women''s Dress', 'Apparel', 3, 450.00);
+INSERT INTO sales_data VALUES (12, '2023-02-03', 203, 303, 'Men''s T-shirt', 'Apparel', 1, 90.00);
+INSERT INTO sales_data VALUES (13, '2023-01-01', 301, 401, 'Desk Chair', 'Furniture', 1, 200.00);
+INSERT INTO sales_data VALUES (14, '2023-01-02', 302, 402, 'Bookshelf', 'Furniture', 2, 350.00);
+INSERT INTO sales_data VALUES (15, '2023-01-03', 303, 403, 'Coffee Table', 'Furniture', 1, 180.00);
+INSERT INTO sales_data VALUES (16, '2023-02-01', 301, 401, 'Desk Chair', 'Furniture', 2, 400.00);
+INSERT INTO sales_data VALUES (17, '2023-02-02', 302, 402, 'Bookshelf', 'Furniture', 1, 175.00);
+INSERT INTO sales_data VALUES (18, '2023-02-03', 303, 403, 'Coffee Table', 'Furniture', 1, 190.00);
+
+
+SELECT category, 
+       concat(DATE_FORMAT(order_date, '%b')," - ",extract(YEAR FROM order_date)) AS month_year,
+       sum(amount) as amount
+FROM sales_data
+GROUP BY category, month_year;
+------
+# (2) Write a query to pivot the given table.
+CREATE TABLE sales_data (
+    sales_date  DATE,
+    customer_id VARCHAR(30),
+    amount      DECIMAL(10, 2)
+);
+
+-- Insert data with the correct date format and numeric amount
+INSERT INTO sales_data VALUES ('2021-01-01', 'Cust-1', 50);
+INSERT INTO sales_data VALUES ('2021-01-02', 'Cust-1', 50);
+INSERT INTO sales_data VALUES ('2021-01-03', 'Cust-1', 50);
+INSERT INTO sales_data VALUES ('2021-01-01', 'Cust-2', 100);
+INSERT INTO sales_data VALUES ('2021-01-02', 'Cust-2', 100);
+INSERT INTO sales_data VALUES ('2021-01-03', 'Cust-2', 100);
+INSERT INTO sales_data VALUES ('2021-02-01', 'Cust-2', -100);
+INSERT INTO sales_data VALUES ('2021-02-02', 'Cust-2', -100);
+INSERT INTO sales_data VALUES ('2021-02-03', 'Cust-2', -100);
+INSERT INTO sales_data VALUES ('2021-03-01', 'Cust-3', 1);
+INSERT INTO sales_data VALUES ('2021-04-01', 'Cust-3', 1);
+INSERT INTO sales_data VALUES ('2021-05-01', 'Cust-3', 1);
+INSERT INTO sales_data VALUES ('2021-06-01', 'Cust-3', 1);
+INSERT INTO sales_data VALUES ('2021-07-01', 'Cust-3', -1);
+INSERT INTO sales_data VALUES ('2021-08-01', 'Cust-3', -1);
+INSERT INTO sales_data VALUES ('2021-09-01', 'Cust-3', -1);
+INSERT INTO sales_data VALUES ('2021-10-01', 'Cust-3', -1);
+INSERT INTO sales_data VALUES ('2021-11-01', 'Cust-3', -1);
+INSERT INTO sales_data VALUES ('2021-12-01', 'Cust-3', -1);
+
+
+SELECT
+    customer_id,
+    SUM(CASE WHEN sales_date = '2021-01-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-01-01`,
+    SUM(CASE WHEN sales_date = '2021-01-02' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-01-02`,
+    SUM(CASE WHEN sales_date = '2021-01-03' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-01-03`,
+    SUM(CASE WHEN sales_date = '2021-02-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-02-01`,
+    SUM(CASE WHEN sales_date = '2021-02-02' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-02-02`,
+    SUM(CASE WHEN sales_date = '2021-02-03' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-02-03`,
+    SUM(CASE WHEN sales_date = '2021-03-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-03-01`,
+    SUM(CASE WHEN sales_date = '2021-04-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-04-01`,
+    SUM(CASE WHEN sales_date = '2021-05-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-05-01`,
+    SUM(CASE WHEN sales_date = '2021-06-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-06-01`,
+    SUM(CASE WHEN sales_date = '2021-07-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-07-01`,
+    SUM(CASE WHEN sales_date = '2021-08-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-08-01`,
+    SUM(CASE WHEN sales_date = '2021-09-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-09-01`,
+    SUM(CASE WHEN sales_date = '2021-10-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-10-01`,
+    SUM(CASE WHEN sales_date = '2021-11-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-11-01`,
+    SUM(CASE WHEN sales_date = '2021-12-01' THEN CAST(amount AS DECIMAL(10, 2)) ELSE 0 END) AS `2021-12-01`
+FROM sales_data
+GROUP BY customer_id;
+------------------------------------------------------------------------------------------------------------------------------
+#7.Retrieve the names and salaries of all employees along with their immediate manager's name.
+CREATE TABLE Employee (
+    employee_id INT PRIMARY KEY,
+    employee_name VARCHAR(50) NOT NULL,
+    manager_id INT,
+    salary DECIMAL(10, 2),
+    hire_date DATE
+);
+INSERT INTO Employee VALUES
+(1, 'John Doe', NULL, 50000.00, '2020-01-01'),
+(2, 'Jane Smith', 1, 45000.00, '2020-02-15'),
+(3, 'Bob Johnson', 1, 48000.00, '2020-03-10'),
+(4, 'Alice Brown', 2, 42000.00, '2020-04-20'),
+(5, 'Charlie Davis', 2, 40000.00, '2020-05-05'),
+(6, 'Eva White', 3, 55000.00, '2020-06-15'),
+(7, 'Frank Miller', 3, 53000.00, '2020-07-01'),
+(8, 'Grace Wilson', 4, 49000.00, '2020-08-10'),
+(9, 'Henry Taylor', 4, 47000.00, '2020-09-20'),
+(10, 'Ivy Clark', 5, 42000.00, '2020-10-05');
+
+# Retrieve the names and salaries of all employees along with their immediate manager's name.
+WITH recursive emp as(
+select employee_id,
+       employee_name,
+       manager_id
+FROM employee
+WHERE manager_id IS NULL
+UNION 
+SELECT e.employee_id,
+	   e.employee_name,
+       e.manager_id
+FROM employee e 
+JOIN emp em
+ON em.employee_id=e.manager_id
+)
+SELECT em.employee_id,em.employee_name,em.manager_id,
+		coalesce(ep.employee_name,'No Manager') as manager_name,
+        ep.hire_date
+from emp em
+LEFT JOIN employee ep 
+ON em.manager_id=ep.employee_id;
+---------------------------------------------------------------------------------------------------------------
+#8.List the hierarchy (ancestors) for a specific employee. For example, list all the managers for employee 'Bob Johnson'
+WITH recursive bo as(
+SELECT employee_id,
+       employee_name,
+	   manager_id  FROM employee
+WHERE employee_name='Bob Johnson'
+UNION ALL
+SELECT  E.employee_id,
+       E.employee_name,
+	   E.manager_id  
+FROM EMPLOYEE E
+JOIN bo as b 
+ON b.employee_id = e.manager_id
+)
+select bo.employee_id,
+       bo.employee_name,
+	   bo.manager_id ,
+       e.employee_name as manager_name FROM bo as bo 
+join employee e
+ON e.employee_id = bo.manager_id;
+
+
+
+
+
