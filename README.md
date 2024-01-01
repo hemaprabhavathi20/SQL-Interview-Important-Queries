@@ -11,7 +11,7 @@ Important/Repeated asked SQL Questions:
 4. Write a query to remove duplicate rows in the table.
 5. Write a query to get the desired output?
    <p align="center">
-  <img src="https://github.com/hemaprabhavathi20/SQL-Interview-Important-Queries/assets/147178268/e317d5c8-0b21-4708-9752-8e07646c7183" alt="Screenshot (489)" width="200">
+  <img src="https://github.com/hemaprabhavathi20/SQL-Interview-Important-Queries/assets/147178268/e317d5c8-0b21-4708-9752-8e07646c7183" alt="Screenshot (489)" width="600">
 </p>
 
 
