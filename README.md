@@ -10,16 +10,15 @@ Important/Repeated asked SQL Questions:
 3. Write a SQL query to schedule a match between each team
 4. Write a query to remove duplicate rows in the table.
 5. Write a query to get the desired output?
-
-     <p align="center">
+      <p align="center">
   <img src="https://github.com/hemaprabhavathi20/SQL-Interview-Important-Queries/assets/147178268/e317d5c8-0b21-4708-9752-8e07646c7183" alt="Screenshot (489)" width="80%">
-</p>
+     </p>
 
         
 6.Write a query to get desired output? 
               <p align="center">
             ![PIVOT-SQL](https://github.com/hemaprabhavathi20/SQL-Interview-Important-Queries/assets/147178268/f9452977-6dc4-4720-98f5-275487e061ec)
-                 </p>
+               </p>
                  
  7.Retrieve the names and salaries of all employees along with their immediate manager's name<BR>
 
