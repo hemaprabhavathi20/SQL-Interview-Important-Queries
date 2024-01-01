@@ -5,7 +5,7 @@ I keep updating this question.
 Important/Repeated asked SQL Questions:
 
 1. Write a query to find highest and lowest salary in each department<BR>
-   
+
 2.From the given cars_travel table, find the actual distance travelled by each car corresponding to each day.
 
 3. Write a sql query to schedule a match between each team
@@ -18,5 +18,6 @@ Important/Repeated asked SQL Questions:
 6.Write a query to get desired output? 
             ![PIVOT-SQL](https://github.com/hemaprabhavathi20/SQL-Interview-Important-Queries/assets/147178268/f9452977-6dc4-4720-98f5-275487e061ec)
 
-7.Retrieve the names and salaries of all employees along with their immediate manager's name
+7.Retrieve the names and salaries of all employees along with their immediate manager's name<BR>
+
 8. List the hierarchy (ancestors) for a specific employee. For example, list all the managers for employee 'Bob Johnson'
