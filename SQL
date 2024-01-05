@@ -127,6 +127,7 @@ HAVING COUNT(*) > 1)
 
 DELETE FROM detail
 WHERE id IN (SELECT max_id FROM cte);
+
 # BOTH QUERIES REMOVE DUPLICATES
 with cte AS
 (SELECT Name,Age,City,min(id) AS mIN_id FROM detail
